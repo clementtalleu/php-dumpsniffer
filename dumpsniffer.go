@@ -99,11 +99,11 @@ func checkDumpDieOccurences(filePath string) {
         lowerLine := strings.ToLower(line)
 
         // Check occurences
-		if strings.Contains(lowerLine, "var_dump(") || strings.Contains(line, "dump(") {
+		if strings.Contains(lowerLine, "var_dump(") || strings.Contains(lowerLine, "dump(") {
 			fmt.Printf("%s: dump/var_dump found on line %d \n", filePath, lineNumber)
 		}
 
-		if strings.Contains(lowerLine, "die(") || strings.Contains(line, "die;") {
+		if strings.Contains(lowerLine, "die(") || strings.Contains(lowerLine, "die;") {
 			fmt.Printf("%s: die found on line %d \n", filePath, lineNumber)
 		}
 
