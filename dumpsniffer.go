@@ -7,6 +7,7 @@ import (
 	"strings"
 	"log"
 	"bufio"
+	"time"
 )
 
 func main() {
@@ -15,6 +16,8 @@ func main() {
    		return
    	}
 
+   	startTime := time.Now()
+   	filesInspected := 0
    	path := os.Args[1]
 
    	if isFile(path) {
@@ -24,6 +27,7 @@ func main() {
    		}
 
    		checkDumpDieOccurences(path)
+   		displayTimeAndFiles(startTime, 1)
    		return
    	}
 
@@ -40,6 +44,7 @@ func main() {
 
             if isPHPFile(filePath) {
                 checkDumpDieOccurences(filePath)
+                filesInspected++
             }
 
             // Not a php file, continue
@@ -51,6 +56,7 @@ func main() {
             return
         }
 
+        displayTimeAndFiles(startTime, filesInspected)
         return
     }
 }
@@ -109,4 +115,10 @@ func checkDumpDieOccurences(filePath string) {
 
 		lineNumber++
 	}
+}
+
+func displayTimeAndFiles(startTime time.Time, filesInspected int) {
+    elapsedTime := time.Since(startTime)
+    fmt.Printf("Elapsed time: %s\n", elapsedTime)
+    fmt.Printf("Number of files inspected: %d\n", filesInspected)
 }
