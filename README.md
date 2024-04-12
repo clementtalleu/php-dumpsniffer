@@ -6,6 +6,7 @@ It can be useful for identifying and cleaning up debugging code in your PHP proj
 ## Features
 
 - Detects occurrences of `var_dump()`, `dump()`, `die`, etc., in PHP files.
+- 2.5sec average runtime for scanning 20k files
 - Supports both single files and directories for analysis.
 - Recursive scanning for files in nested directories.
 - Outputs file paths and line numbers where occurrences are found.
@@ -50,8 +51,6 @@ copy dumpsniffer.exe C:\Windows\System32
 ```
 
 Now, DumpSniffer is installed on your system and ready to use. You can invoke it from any directory using the dumpsniffer command in your terminal.
-
-
 
 
 

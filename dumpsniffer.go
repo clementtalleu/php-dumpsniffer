@@ -8,6 +8,7 @@ import (
 	"log"
 	"bufio"
 	"time"
+	"runtime"
 )
 
 func main() {
@@ -17,6 +18,7 @@ func main() {
    	}
 
    startTime := time.Now()
+   var memStats runtime.MemStats
    filesInspected := 0
    path := os.Args[1]
 
@@ -27,7 +29,8 @@ func main() {
    		}
 
         occurences := checkDumpDieOccurences(path)
-        displayTimeAndFiles(startTime, 1, occurences)
+        runtime.ReadMemStats(&memStats)
+        displayTimeAndFiles(startTime, 1, occurences, memStats.Alloc)
         return
    }
 
@@ -56,7 +59,8 @@ func main() {
             return
         }
 
-        displayTimeAndFiles(startTime, filesInspected, occurences)
+        runtime.ReadMemStats(&memStats)
+        displayTimeAndFiles(startTime, filesInspected, occurences, memStats.Alloc)
         return
     }
 }
@@ -117,9 +121,11 @@ func checkDumpDieOccurences(filePath string) int {
 	return occurencesFound
 }
 
-func displayTimeAndFiles(startTime time.Time, filesInspected int, occurences int) {
+func displayTimeAndFiles(startTime time.Time, filesInspected int, occurences int, memoryAllocated uint64) {
+    memoryInKo := float64(memoryAllocated) / float64(1024)
     elapsedTime := time.Since(startTime)
     fmt.Printf("Elapsed time: %s\n", elapsedTime)
     fmt.Printf("Number of files inspected: %d\n", filesInspected)
     fmt.Printf("%d occurences found\n", occurences)
+    fmt.Printf("%.2fko memory allocated\n", memoryInKo)
 }
