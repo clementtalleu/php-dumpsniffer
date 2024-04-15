@@ -6,7 +6,7 @@ It can be useful for identifying and cleaning up debugging code in your PHP proj
 ## Features
 
 - Detects occurrences of `var_dump()`, `dump()`, `die`, etc., in PHP files.
-- 2.5sec average runtime for scanning 20k files
+- 1.7sec average runtime for scanning 40k files
 - Supports both single files and directories for analysis.
 - Recursive scanning for files in nested directories.
 - Outputs file paths and line numbers where occurrences are found.

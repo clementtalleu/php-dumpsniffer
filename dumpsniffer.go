@@ -9,6 +9,7 @@ import (
 	"bufio"
 	"time"
 	"runtime"
+	"sync"
 )
 
 func main() {
@@ -39,6 +40,10 @@ func main() {
         // We assign the response of the recursive function to two different error variables, one for the directory being iterated and one for the file.
         // If no error occurs, check for dump occurrences; otherwise, display the error.
         occurences := 0
+
+        // WaitGroup and Mutex are used to synchronize the goroutines
+        var wg sync.WaitGroup
+
         dirError := filepath.Walk(path, func(filePath string, fileInfo os.FileInfo, fileError error) error {
             // file error is not null, stop the script and display the error
             if fileError != nil {
@@ -47,8 +52,12 @@ func main() {
             }
 
             if isPHPFile(filePath) {
-                occurences += checkDumpDieOccurences(filePath)
                 filesInspected++
+                wg.Add(1)
+                go func(filePath string) {
+                    defer wg.Done()
+                    occurences += checkDumpDieOccurences(filePath)
+                }(filePath)
             }
 
             return nil
@@ -59,13 +68,14 @@ func main() {
             return
         }
 
+        wg.Wait()
         runtime.ReadMemStats(&memStats)
         displayTimeAndFiles(startTime, filesInspected, occurences, memStats.Alloc)
         return
     }
 }
 
-func isFile(path string) (bool) {
+func isFile(path string) bool {
     fileInfo, err := os.Stat(path)
     if err != nil {
         return false
@@ -74,11 +84,12 @@ func isFile(path string) (bool) {
     return fileInfo.Mode().IsRegular()
 }
 
-func isDir(path string) (bool) {
+func isDir(path string) bool {
     fileInfo, err := os.Stat(path)
     if err != nil {
         return false
     }
+
     return fileInfo.Mode().IsDir()
 }
 
